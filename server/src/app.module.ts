@@ -11,6 +11,7 @@ import { HelloModule } from './hello/hello.module';
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      context: ({ req }) => ({ req }),
     }),
     PrismaModule,
     HelloModule,
