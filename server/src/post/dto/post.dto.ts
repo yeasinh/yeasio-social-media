@@ -18,6 +18,13 @@ export class CreatePostInput {
 }
 
 @InputType()
+export class UpdatePostInput {
+  @Field() postId: string;
+  @Field({ nullable: true }) title?: string;
+  @Field({ nullable: true }) content?: string;
+}
+
+@InputType()
 export class SharePostInput {
   @Field() postId: string; // original post to share
   @Field({ nullable: true }) title?: string; // optional comment

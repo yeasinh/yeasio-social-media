@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
-import { CreatePostInput, SharePostInput } from './dto/post.dto';
+import {
+  CreatePostInput,
+  SharePostInput,
+  UpdatePostInput,
+} from './dto/post.dto';
 
 @Injectable()
 export class PostService {
@@ -26,6 +30,29 @@ export class PostService {
         author: true,
       },
     });
+  }
+
+  async updatePost(input: UpdatePostInput, userId: string) {
+    const post = await this.prisma.post.findUnique({
+      where: { id: input.postId },
+    });
+    if (!post || post.authorId !== userId) throw new Error('Forbidden');
+
+    return this.prisma.post.update({
+      where: { id: input.postId },
+      data: {
+        title: input.title,
+        content: input.content,
+      },
+    });
+  }
+
+  async deletePost(postId: string, userId: string) {
+    const post = await this.prisma.post.findUnique({ where: { id: postId } });
+    if (!post || post.authorId !== userId) throw new Error('Forbidden');
+
+    await this.prisma.post.delete({ where: { id: postId } });
+    return true;
   }
 
   async sharePost(input: SharePostInput, userId: string) {

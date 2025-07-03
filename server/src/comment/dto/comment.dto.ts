@@ -16,3 +16,9 @@ export class CreateCommentInput {
   @Field() postId: string;
   @Field() content: string;
 }
+
+@InputType()
+export class UpdateCommentInput {
+  @Field() commentId: string;
+  @Field() content: string;
+}

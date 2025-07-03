@@ -24,6 +24,7 @@ type Post {
   content: String!
   createdAt: DateTime!
   author: User!
+  sharedFrom: Post
 }
 
 """
@@ -38,17 +39,33 @@ type Like {
   createdAt: DateTime!
 }
 
+type Comment {
+  id: String!
+  content: String!
+  createdAt: DateTime!
+  postId: String!
+  userId: String!
+  user: User!
+}
+
 type Query {
   hello: HelloType!
   getAllPosts: [Post!]!
   getLikesByPost(postId: String!): [Like!]!
+  getCommentsByPost(postId: String!): [Comment!]!
 }
 
 type Mutation {
   register(input: RegisterInput!): AuthResponse!
   login(input: LoginInput!): AuthResponse!
   createPost(input: CreatePostInput!): Post!
+  updatePost(input: UpdatePostInput!): Post!
+  deletePost(postId: String!): Boolean!
+  sharePost(input: SharePostInput!): Post!
   toggleLike(input: ToggleLikeInput!): String!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: UpdateCommentInput!): Comment!
+  deleteComment(commentId: String!): Boolean!
 }
 
 input RegisterInput {
@@ -67,6 +84,28 @@ input CreatePostInput {
   content: String!
 }
 
+input UpdatePostInput {
+  postId: String!
+  title: String
+  content: String
+}
+
+input SharePostInput {
+  postId: String!
+  title: String
+  content: String
+}
+
 input ToggleLikeInput {
   postId: String!
+}
+
+input CreateCommentInput {
+  postId: String!
+  content: String!
+}
+
+input UpdateCommentInput {
+  commentId: String!
+  content: String!
 }
