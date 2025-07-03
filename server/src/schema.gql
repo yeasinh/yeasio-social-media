@@ -31,15 +31,24 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Like {
+  id: String!
+  postId: String!
+  userId: String!
+  createdAt: DateTime!
+}
+
 type Query {
   hello: HelloType!
   getAllPosts: [Post!]!
+  getLikesByPost(postId: String!): [Like!]!
 }
 
 type Mutation {
   register(input: RegisterInput!): AuthResponse!
   login(input: LoginInput!): AuthResponse!
   createPost(input: CreatePostInput!): Post!
+  toggleLike(input: ToggleLikeInput!): String!
 }
 
 input RegisterInput {
@@ -56,4 +65,8 @@ input LoginInput {
 input CreatePostInput {
   title: String!
   content: String!
+}
+
+input ToggleLikeInput {
+  postId: String!
 }
