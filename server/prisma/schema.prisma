@@ -14,19 +14,21 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  password      String
-  name          String
-  profilePhoto  String?  
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(uuid())
+  email        String   @unique
+  password     String
+  name         String
+  profilePhoto String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  posts         Post[]
-  likes         Like[]
-  comments      Comment[]
+  posts    Post[]
+  likes    Like[]
+  comments Comment[]
+
+  notifications   Notification[] @relation("UserNotifications")
+  triggeredNotifs Notification[] @relation("ActorRelation")
 }
-
 
 model Post {
   id        String   @id @default(uuid())
@@ -35,14 +37,15 @@ model Post {
   createdAt DateTime @default(now())
   author    User     @relation(fields: [authorId], references: [id])
   authorId  String
-  
-  likes     Like[]
-  comments  Comment[]
 
-  // Sharing
-  sharedFrom    Post?     @relation("SharedPosts", fields: [sharedFromId], references: [id])
-  sharedFromId  String?   // nullable, since not all posts are shared
-  sharedPosts   Post[]    @relation("SharedPosts")
+  likes    Like[]
+  comments Comment[]
+
+  sharedFrom   Post?   @relation("SharedPosts", fields: [sharedFromId], references: [id])
+  sharedFromId String? // nullable, since not all posts are shared
+  sharedPosts  Post[]  @relation("SharedPosts")
+
+  notifications Notification[]
 }
 
 model Like {
@@ -61,9 +64,34 @@ model Comment {
   content   String
   createdAt DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
-  post      Post     @relation(fields: [postId], references: [id])
-  postId    String
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String
+}
+
+enum NotificationType {
+  LIKE
+  COMMENT
+  SHARE
+  MESSAGE
+}
+
+model Notification {
+  id   String           @id @default(uuid())
+  type NotificationType
+
+  user   User   @relation("UserNotifications", fields: [userId], references: [id])
+  userId String
+
+  actor   User   @relation("ActorRelation", fields: [actorId], references: [id])
+  actorId String
+
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String?
+
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
 }

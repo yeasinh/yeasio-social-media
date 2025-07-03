@@ -5,10 +5,15 @@ import {
   SharePostInput,
   UpdatePostInput,
 } from './dto/post.dto';
+import { NotificationService } from 'src/notification/notification.service';
+import { NotificationType } from 'src/notification/dto/notification.dto';
 
 @Injectable()
 export class PostService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: NotificationService,
+  ) {}
 
   async createPost(input: CreatePostInput, userId: string) {
     return this.prisma.post.create({
@@ -62,7 +67,7 @@ export class PostService {
 
     if (!original) throw new Error('Original post not found');
 
-    return this.prisma.post.create({
+    const sharedPost = await this.prisma.post.create({
       data: {
         title: input.title ?? '',
         content: input.content ?? '',
@@ -74,5 +79,18 @@ export class PostService {
         sharedFrom: true,
       },
     });
+
+    // Trigger notification to original post's author
+    if (original.authorId !== userId) {
+      await this.notificationService.createNotification(
+        original.authorId,
+        userId,
+        NotificationType.SHARE,
+        `Someone shared your post.`,
+        original.id,
+      );
+    }
+
+    return sharedPost;
   }
 }
