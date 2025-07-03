@@ -14,16 +14,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]
-  likes     Like[]
-  comments  Comment[]
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String
+  name          String
+  profilePhoto  String?  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  posts         Post[]
+  likes         Like[]
+  comments      Comment[]
 }
+
 
 model Post {
   id        String   @id @default(uuid())

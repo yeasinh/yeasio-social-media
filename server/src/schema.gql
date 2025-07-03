@@ -14,9 +14,16 @@ type HelloType {
 
 type User {
   id: String!
-  name: String!
   email: String!
+  name: String!
+  profilePhoto: String
+  createdAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Post {
   id: String!
@@ -26,11 +33,6 @@ type Post {
   author: User!
   sharedFrom: Post
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type Like {
   id: String!
@@ -53,6 +55,8 @@ type Query {
   getAllPosts: [Post!]!
   getLikesByPost(postId: String!): [Like!]!
   getCommentsByPost(postId: String!): [Comment!]!
+  getMyProfile: User!
+  getMyPosts: [Post!]!
 }
 
 type Mutation {
@@ -66,6 +70,7 @@ type Mutation {
   createComment(input: CreateCommentInput!): Comment!
   updateComment(input: UpdateCommentInput!): Comment!
   deleteComment(commentId: String!): Boolean!
+  updateMyProfile(input: UpdateProfileInput!): User!
 }
 
 input RegisterInput {
@@ -108,4 +113,9 @@ input CreateCommentInput {
 input UpdateCommentInput {
   commentId: String!
   content: String!
+}
+
+input UpdateProfileInput {
+  name: String
+  profilePhoto: String
 }
