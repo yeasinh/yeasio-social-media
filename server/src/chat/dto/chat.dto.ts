@@ -40,4 +40,5 @@ export class StartConversationInput {
 export class SendMessageInput {
   @Field() conversationId: string;
   @Field() content: string;
+  @Field({ nullable: true }) mediaUrl?: string;
 }

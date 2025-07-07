@@ -11,6 +11,7 @@ import { CommentModule } from './comment/comment.module';
 import { UserModule } from './user/user.module';
 import { NotificationModule } from './notification/notification.module';
 import { ChatModule } from './chat/chat.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { ChatModule } from './chat/chat.module';
     UserModule,
     NotificationModule,
     ChatModule,
+    UploadModule,
   ],
 })
 export class AppModule {}

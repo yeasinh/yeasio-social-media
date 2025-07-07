@@ -51,12 +51,18 @@ export class ChatService {
     });
   }
 
-  async sendMessage(conversationId: string, senderId: string, content: string) {
+  async sendMessage(
+    conversationId: string,
+    senderId: string,
+    content: string,
+    mediaUrl?: string,
+  ) {
     const message = await this.prisma.message.create({
       data: {
         conversationId,
         senderId,
         content,
+        mediaUrl,
       },
     });
 
@@ -114,5 +120,36 @@ export class ChatService {
       conversationId: c.id,
       unreadCount: c.messages.length,
     }));
+  }
+
+  async searchMessages(
+    conversationId: string,
+    userId: string,
+    keyword: string,
+  ) {
+    // Confirm user is a participant
+    const conversation = await this.prisma.conversation.findFirst({
+      where: {
+        id: conversationId,
+        participants: {
+          some: { id: userId },
+        },
+      },
+    });
+
+    if (!conversation) throw new Error('Access denied');
+
+    return this.prisma.message.findMany({
+      where: {
+        conversationId,
+        content: {
+          contains: keyword,
+          mode: 'insensitive',
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }

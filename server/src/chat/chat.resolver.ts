@@ -109,4 +109,18 @@ export class ChatResolver {
   typingEvent(@Args('conversationId') conversationId: string) {
     return pubsub.asyncIterator(`typing_${conversationId}`);
   }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => [Message])
+  searchMessages(
+    @Args('conversationId') conversationId: string,
+    @Args('keyword') keyword: string,
+    @CurrentUser() user: any,
+  ) {
+    return this.chatService.searchMessages(
+      conversationId,
+      user.userId,
+      keyword,
+    );
+  }
 }

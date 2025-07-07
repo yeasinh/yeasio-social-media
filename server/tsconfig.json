@@ -17,6 +17,8 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "lib": ["es2023", "esnext.asynciterable", "dom"]
+    "lib": ["es2023", "esnext.asynciterable", "dom"],
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   }
 }

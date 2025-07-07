@@ -15,6 +15,7 @@ export class Post {
 export class CreatePostInput {
   @Field() title: string;
   @Field() content: string;
+  @Field({ nullable: true }) mediaUrl?: string;
 }
 
 @InputType()

@@ -20,6 +20,7 @@ export class PostService {
       data: {
         title: input.title,
         content: input.content,
+        mediaUrl: input.mediaUrl,
         authorId: userId,
       },
       include: {
