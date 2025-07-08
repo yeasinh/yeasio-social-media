@@ -1,0 +1,121 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AuthResponse {
+  token: String!
+  name: String!
+  email: String!
+}
+
+type HelloType {
+  message: String!
+}
+
+type User {
+  id: String!
+  email: String!
+  name: String!
+  profilePhoto: String
+  createdAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Post {
+  id: String!
+  title: String!
+  content: String!
+  createdAt: DateTime!
+  author: User!
+  sharedFrom: Post
+}
+
+type Like {
+  id: String!
+  postId: String!
+  userId: String!
+  createdAt: DateTime!
+}
+
+type Comment {
+  id: String!
+  content: String!
+  createdAt: DateTime!
+  postId: String!
+  userId: String!
+  user: User!
+}
+
+type Query {
+  hello: HelloType!
+  getAllPosts: [Post!]!
+  getLikesByPost(postId: String!): [Like!]!
+  getCommentsByPost(postId: String!): [Comment!]!
+  getMyProfile: User!
+  getMyPosts: [Post!]!
+}
+
+type Mutation {
+  register(input: RegisterInput!): AuthResponse!
+  login(input: LoginInput!): AuthResponse!
+  createPost(input: CreatePostInput!): Post!
+  updatePost(input: UpdatePostInput!): Post!
+  deletePost(postId: String!): Boolean!
+  sharePost(input: SharePostInput!): Post!
+  toggleLike(input: ToggleLikeInput!): String!
+  createComment(input: CreateCommentInput!): Comment!
+  updateComment(input: UpdateCommentInput!): Comment!
+  deleteComment(commentId: String!): Boolean!
+  updateMyProfile(input: UpdateProfileInput!): User!
+}
+
+input RegisterInput {
+  name: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+input CreatePostInput {
+  title: String!
+  content: String!
+}
+
+input UpdatePostInput {
+  postId: String!
+  title: String
+  content: String
+}
+
+input SharePostInput {
+  postId: String!
+  title: String
+  content: String
+}
+
+input ToggleLikeInput {
+  postId: String!
+}
+
+input CreateCommentInput {
+  postId: String!
+  content: String!
+}
+
+input UpdateCommentInput {
+  commentId: String!
+  content: String!
+}
+
+input UpdateProfileInput {
+  name: String
+  profilePhoto: String
+}
