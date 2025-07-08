@@ -1,32 +1,23 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { store, persistor } from './src/store';
 import { ApolloProvider } from '@apollo/client';
 import { apolloClient } from './src/apollo/client';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Text, View } from 'react-native';
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
-
+const App = () => {
   return (
     <ApolloProvider client={apolloClient}>
-      <View style={styles.container}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <NewAppScreen templateFileName="App.tsx" />
-      </View>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <View>
+            <Text>Yeasio App</Text>
+          </View>
+        </PersistGate>
+      </Provider>
     </ApolloProvider>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+};
 
 export default App;
