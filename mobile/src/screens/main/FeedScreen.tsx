@@ -5,6 +5,7 @@ import { GET_ALL_POSTS } from '../../graphql/post.graphql';
 import { TOGGLE_LIKE, GET_LIKES_BY_POST } from '../../graphql/like.graphql';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
+import CommentSection from '../../components/CommentSection';
 
 const LikeButton = ({ postId }: { postId: string }) => {
   const userId = useSelector((state: RootState) => state.auth.user?.id);
@@ -59,6 +60,7 @@ const FeedScreen = () => {
             />
           )}
           <LikeButton postId={item.id} />
+          <CommentSection postId={item.id} />
           <Text style={styles.timestamp}>
             {new Date(item.createdAt).toLocaleString()}
           </Text>
