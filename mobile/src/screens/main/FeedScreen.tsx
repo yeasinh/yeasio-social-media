@@ -1,7 +1,41 @@
 import React from 'react';
 import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from '../../graphql/post.graphql';
+import { TOGGLE_LIKE, GET_LIKES_BY_POST } from '../../graphql/like.graphql';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
+
+const LikeButton = ({ postId }: { postId: string }) => {
+  const userId = useSelector((state: RootState) => state.auth.user?.id);
+  const { data, refetch } = useQuery(GET_LIKES_BY_POST, {
+    variables: { postId },
+  });
+
+  const [toggleLike] = useMutation(TOGGLE_LIKE, {
+    onCompleted: () => refetch(),
+  });
+
+  const isLiked = data?.getLikesByPost?.some(
+    (like: any) => like.userId === userId,
+  );
+  const likeCount = data?.getLikesByPost?.length || 0;
+
+  const handleLike = () => {
+    toggleLike({ variables: { input: { postId } } });
+  };
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6 }}>
+      <Text onPress={handleLike} style={{ fontSize: 18 }}>
+        {isLiked ? '❤️' : '🤍'}
+      </Text>
+      <Text style={{ marginLeft: 6 }}>
+        {likeCount} like{likeCount !== 1 ? 's' : ''}
+      </Text>
+    </View>
+  );
+};
 
 const FeedScreen = () => {
   const { data, loading, error } = useQuery(GET_ALL_POSTS);
@@ -24,6 +58,7 @@ const FeedScreen = () => {
               style={styles.image}
             />
           )}
+          <LikeButton postId={item.id} />
           <Text style={styles.timestamp}>
             {new Date(item.createdAt).toLocaleString()}
           </Text>
