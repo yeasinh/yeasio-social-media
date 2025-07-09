@@ -3,14 +3,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Button, Text, View } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
+import FeedScreen from '../screens/main/FeedScreen';
 
 const Tab = createBottomTabNavigator();
-
-const FeedScreen = () => (
-  <View>
-    <Text>Feed</Text>
-  </View>
-);
 
 const ChatScreen = () => (
   <View>
