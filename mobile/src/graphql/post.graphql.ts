@@ -27,3 +27,21 @@ export const CREATE_POST = gql`
     }
   }
 `;
+
+export const SHARE_POST = gql`
+  mutation SharePost($input: SharePostInput!) {
+    sharePost(input: $input) {
+      id
+      title
+      content
+      sharedFrom {
+        id
+        content
+        mediaUrl
+        author {
+          name
+        }
+      }
+    }
+  }
+`;

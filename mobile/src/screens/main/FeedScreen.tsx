@@ -1,11 +1,13 @@
 import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, Button } from 'react-native';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from '../../graphql/post.graphql';
 import { TOGGLE_LIKE, GET_LIKES_BY_POST } from '../../graphql/like.graphql';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import CommentSection from '../../components/CommentSection';
+import SharePostModal from '../../components/SharePostModal';
+import { useState } from 'react';
 
 const LikeButton = ({ postId }: { postId: string }) => {
   const userId = useSelector((state: RootState) => state.auth.user?.id);
@@ -39,10 +41,18 @@ const LikeButton = ({ postId }: { postId: string }) => {
 };
 
 const FeedScreen = () => {
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+
   const { data, loading, error } = useQuery(GET_ALL_POSTS);
 
   if (loading) return <Text>Loading posts...</Text>;
   if (error) return <Text>Error loading posts.</Text>;
+
+  <SharePostModal
+    visible={!!selectedPost}
+    postId={selectedPost!}
+    onClose={() => setSelectedPost(null)}
+  />;
 
   return (
     <FlatList
@@ -53,6 +63,31 @@ const FeedScreen = () => {
           <Text style={styles.author}>{item.author.name}</Text>
           <Text style={styles.title}>{item.title}</Text>
           <Text>{item.content}</Text>
+
+          {item.sharedFrom && (
+            <View
+              style={{
+                marginTop: 6,
+                padding: 8,
+                backgroundColor: '#f0f0f0',
+                borderRadius: 6,
+              }}
+            >
+              <Text style={{ fontWeight: 'bold' }}>
+                {item.sharedFrom.author?.name || 'Unknown'}'s post
+              </Text>
+              <Text>{item.sharedFrom.content}</Text>
+              {item.sharedFrom.mediaUrl && (
+                <Image
+                  source={{
+                    uri: `http://localhost:3000${item.sharedFrom.mediaUrl}`,
+                  }}
+                  style={[styles.image, { marginTop: 6 }]}
+                />
+              )}
+            </View>
+          )}
+
           {item.mediaUrl && (
             <Image
               source={{ uri: `http://localhost:3000${item.mediaUrl}` }}
@@ -61,6 +96,7 @@ const FeedScreen = () => {
           )}
           <LikeButton postId={item.id} />
           <CommentSection postId={item.id} />
+          <Button title="Share" onPress={() => setSelectedPost(item.id)} />
           <Text style={styles.timestamp}>
             {new Date(item.createdAt).toLocaleString()}
           </Text>
