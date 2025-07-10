@@ -8,6 +8,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import {
   GET_MESSAGES,
@@ -19,6 +20,8 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../store';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { ChatStackParamList } from '../../navigation/ChatStack';
+import { launchImageLibrary } from 'react-native-image-picker';
+import formDataAppendFile from 'apollo-upload-client/formDataAppendFile.mjs';
 
 const ChatRoomScreen = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -26,6 +29,7 @@ const ChatRoomScreen = () => {
   const { conversationId, title } = route.params;
 
   const [text, setText] = useState('');
+  const [file, setFile] = useState<any>(null);
 
   const { data, loading, subscribeToMore } = useQuery(GET_MESSAGES, {
     variables: { conversationId },
@@ -48,18 +52,42 @@ const ChatRoomScreen = () => {
     return () => unsubscribe();
   }, [conversationId]);
 
-  const handleSend = () => {
-    if (!text.trim()) return;
-
-    sendMessage({
-      variables: {
-        input: {
-          conversationId,
-          content: text,
-        },
-      },
+  const pickFile = () => {
+    launchImageLibrary({ mediaType: 'mixed' }, response => {
+      if (response.assets && response.assets.length > 0) {
+        const asset = response.assets[0];
+        setFile({
+          uri: asset.uri!,
+          type: asset.type!,
+          name: asset.fileName!,
+        });
+      }
     });
+  };
+
+  const handleSend = async () => {
+    if (!text.trim() && !file) return;
+
+    const variables: any = {
+      input: {
+        conversationId,
+        content: text,
+      },
+    };
+
+    // Apollo will automatically handle file if it's in variables
+    if (file) {
+      variables.file = {
+        uri: file.uri,
+        type: file.type,
+        name: file.name,
+      };
+    }
+
+    await sendMessage({ variables });
+
     setText('');
+    setFile(null);
   };
 
   return (
@@ -79,6 +107,19 @@ const ChatRoomScreen = () => {
           >
             <Text style={styles.sender}>{item.sender.name}</Text>
             <Text>{item.content}</Text>
+
+            {item.mediaUrl && (
+              <Image
+                source={{ uri: `http://localhost:3000${item.mediaUrl}` }}
+                style={{
+                  width: 200,
+                  height: 200,
+                  borderRadius: 8,
+                  marginTop: 8,
+                }}
+              />
+            )}
+
             <Text style={styles.time}>
               {new Date(item.createdAt).toLocaleTimeString()}
             </Text>
@@ -87,7 +128,14 @@ const ChatRoomScreen = () => {
         contentContainerStyle={{ paddingBottom: 60 }}
       />
 
+      {file && (
+        <View style={{ padding: 10 }}>
+          <Text>📎 {file.name}</Text>
+        </View>
+      )}
+
       <View style={styles.inputBox}>
+        <Button title="📎" onPress={pickFile} />
         <TextInput
           placeholder="Type a message..."
           value={text}

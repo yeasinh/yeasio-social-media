@@ -16,10 +16,11 @@ export const GET_MESSAGES = gql`
 `;
 
 export const SEND_MESSAGE = gql`
-  mutation SendMessage($input: SendMessageInput!) {
-    sendMessage(input: $input) {
+  mutation SendMessage($input: SendMessageInput!, $file: Upload) {
+    sendMessage(input: $input, file: $file) {
       id
       content
+      mediaUrl
       createdAt
       sender {
         id
