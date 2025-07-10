@@ -5,6 +5,8 @@ import { useDispatch } from 'react-redux';
 import { logout } from '../store/slices/authSlice';
 import FeedScreen from '../screens/main/FeedScreen';
 import CreatePostScreen from '../screens/main/CreatePostScreen';
+import ChatListScreen from '../screens/chat/ChatListScreen';
+import ChatStack from './ChatStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -31,6 +33,8 @@ const MainTabs = () => {
       <Tab.Screen name="Create" component={CreatePostScreen} />
       <Tab.Screen name="Chat" component={ChatScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Chat" component={ChatListScreen} />
+      <Tab.Screen name="Chat" component={ChatStack} />
     </Tab.Navigator>
   );
 };
