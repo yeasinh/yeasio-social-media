@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  Button,
 } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { GET_CONVERSATIONS } from '../../graphql/chat.graphql';
@@ -39,6 +40,10 @@ const ChatListScreen = () => {
           })
         }
       >
+        <Button
+          title="New Group"
+          onPress={() => navigation.navigate('CreateGroup')}
+        />
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.message}>{last}</Text>
       </TouchableOpacity>

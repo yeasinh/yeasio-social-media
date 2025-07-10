@@ -18,3 +18,25 @@ export const GET_CONVERSATIONS = gql`
     }
   }
 `;
+
+export const GET_USERS = gql`
+  query GetUsers {
+    getAllUsers {
+      id
+      name
+    }
+  }
+`;
+
+export const CREATE_GROUP_CONVERSATION = gql`
+  mutation CreateGroupConversation($input: CreateConversationInput!) {
+    createConversation(input: $input) {
+      id
+      name
+      participants {
+        id
+        name
+      }
+    }
+  }
+`;
