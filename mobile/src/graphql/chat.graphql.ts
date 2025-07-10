@@ -40,3 +40,20 @@ export const CREATE_GROUP_CONVERSATION = gql`
     }
   }
 `;
+
+export const GET_MY_CONVERSATIONS = gql`
+  query GetMyConversations {
+    getMyConversations {
+      id
+      name
+      participants {
+        id
+        name
+      }
+      lastMessage {
+        content
+        createdAt
+      }
+    }
+  }
+`;

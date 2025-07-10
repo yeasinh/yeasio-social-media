@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Button,
+  TextInput,
 } from 'react-native';
 import { useQuery } from '@apollo/client';
 import { GET_CONVERSATIONS } from '../../graphql/chat.graphql';
@@ -22,8 +23,16 @@ const ChatListScreen = () => {
 
   const { data, loading, error } = useQuery(GET_CONVERSATIONS);
 
+  const [search, setSearch] = useState('');
+
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error loading chats</Text>;
+
+  const filteredData = data?.getMyConversations?.filter((conv: any) =>
+    (conv.name || conv.participants?.map((p: any) => p.name).join(', '))
+      .toLowerCase()
+      .includes(search.toLowerCase()),
+  );
 
   const renderItem = ({ item }: any) => {
     const otherUsers = item.participants.filter((p: any) => p.id !== userId);
@@ -51,11 +60,26 @@ const ChatListScreen = () => {
   };
 
   return (
-    <FlatList
-      data={data.getConversations}
-      renderItem={renderItem}
-      keyExtractor={item => item.id}
-    />
+    <View style={{ flex: 1 }}>
+      <TextInput
+        placeholder="Search chats..."
+        value={search}
+        onChangeText={setSearch}
+        style={{
+          borderWidth: 1,
+          borderColor: '#ccc',
+          borderRadius: 8,
+          padding: 8,
+          margin: 10,
+        }}
+      />
+
+      <FlatList
+        data={filteredData}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+      />
+    </View>
   );
 };
 

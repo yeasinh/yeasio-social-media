@@ -30,6 +30,7 @@ const ChatRoomScreen = () => {
 
   const [text, setText] = useState('');
   const [file, setFile] = useState<any>(null);
+  const [search, setSearch] = useState('');
 
   const { data, loading, subscribeToMore } = useQuery(GET_MESSAGES, {
     variables: { conversationId },
@@ -51,6 +52,10 @@ const ChatRoomScreen = () => {
     });
     return () => unsubscribe();
   }, [conversationId]);
+
+  const messages = data?.getMessages?.filter((msg: any) =>
+    msg.content.toLowerCase().includes(search.toLowerCase()),
+  );
 
   const pickFile = () => {
     launchImageLibrary({ mediaType: 'mixed' }, response => {
@@ -95,8 +100,21 @@ const ChatRoomScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       style={styles.container}
     >
+      <TextInput
+        placeholder="Search messages..."
+        value={search}
+        onChangeText={setSearch}
+        style={{
+          borderWidth: 1,
+          borderColor: '#ccc',
+          borderRadius: 8,
+          padding: 8,
+          margin: 10,
+        }}
+      />
+
       <FlatList
-        data={data?.getMessages}
+        data={messages}
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View
