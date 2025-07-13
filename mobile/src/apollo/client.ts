@@ -1,10 +1,11 @@
-import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import createUploadLink from 'apollo-upload-client/createUploadLink.mjs';
+import Config from 'react-native-config';
 
 const httpLink = createUploadLink({
-  uri: 'http://localhost:3000/graphql',
+  uri: Config.API_URL,
 }) as any;
 
 const authLink = setContext(async (_, { headers }) => {

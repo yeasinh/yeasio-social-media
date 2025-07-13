@@ -3,6 +3,7 @@ import { NotificationService } from './notification.service';
 import { NotificationResolver } from './notification.resolver';
 
 @Module({
-  providers: [NotificationService, NotificationResolver]
+  providers: [NotificationService, NotificationResolver],
+  exports: [NotificationService],
 })
 export class NotificationModule {}

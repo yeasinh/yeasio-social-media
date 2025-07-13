@@ -99,7 +99,7 @@ export class ChatResolver {
       payload.messageSent.conversationId === variables.conversationId,
   })
   messageSent(@Args('conversationId') conversationId: string) {
-    return pubsub.asyncIterator(`newMessage_${conversationId}`);
+    return pubsub.asyncIterableIterator(`newMessage_${conversationId}`);
   }
 
   @Subscription(() => TypingEvent, {
@@ -107,7 +107,7 @@ export class ChatResolver {
       payload.typingEvent.conversationId === variables.conversationId,
   })
   typingEvent(@Args('conversationId') conversationId: string) {
-    return pubsub.asyncIterator(`typing_${conversationId}`);
+    return pubsub.asyncIterableIterator(`typing_${conversationId}`);
   }
 
   @UseGuards(GqlAuthGuard)
