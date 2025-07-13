@@ -1,5 +1,13 @@
 import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet, Button } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  Button,
+  TouchableOpacity,
+} from 'react-native';
 import { useMutation, useQuery } from '@apollo/client';
 import { GET_ALL_POSTS } from '../../graphql/post.graphql';
 import { TOGGLE_LIKE, GET_LIKES_BY_POST } from '../../graphql/like.graphql';
@@ -8,6 +16,9 @@ import { RootState } from '../../store';
 import CommentSection from '../../components/CommentSection';
 import SharePostModal from '../../components/SharePostModal';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ChatStackParamList } from '../../navigation/ChatStack';
 
 const LikeButton = ({ postId }: { postId: string }) => {
   const userId = useSelector((state: RootState) => state.auth.user?.id);
@@ -41,6 +52,9 @@ const LikeButton = ({ postId }: { postId: string }) => {
 };
 
 const FeedScreen = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ChatStackParamList>>();
+
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
 
   const { data, loading, error } = useQuery(GET_ALL_POSTS);
@@ -60,7 +74,13 @@ const FeedScreen = () => {
       keyExtractor={item => item.id}
       renderItem={({ item }) => (
         <View style={styles.card}>
-          <Text style={styles.author}>{item.author.name}</Text>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('UserProfile', { userId: item.author.id })
+            }
+          >
+            <Text style={styles.author}>{item.author.name}</Text>
+          </TouchableOpacity>
           <Text style={styles.title}>{item.title}</Text>
           <Text>{item.content}</Text>
 

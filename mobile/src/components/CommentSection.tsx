@@ -7,6 +7,7 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import { useQuery, useMutation } from '@apollo/client';
 import {
@@ -16,8 +17,14 @@ import {
 } from '../graphql/comment.graphql';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { ChatStackParamList } from '../navigation/ChatStack';
 
 const CommentSection = ({ postId }: { postId: string }) => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<ChatStackParamList>>();
+
   const user = useSelector((state: RootState) => state.auth.user);
 
   const [text, setText] = useState('');
@@ -57,7 +64,13 @@ const CommentSection = ({ postId }: { postId: string }) => {
         keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <View style={styles.commentBox}>
-            <Text style={styles.commentAuthor}>{item.user.name}</Text>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('UserProfile', { userId: user.id })
+              }
+            >
+              <Text style={styles.commentAuthor}>{item.user.name}</Text>
+            </TouchableOpacity>
             <Text>{item.content}</Text>
             <Text style={styles.commentTime}>
               {new Date(item.createdAt).toLocaleString()}

@@ -22,3 +22,20 @@ export const UPDATE_PROFILE = gql`
     }
   }
 `;
+
+export const GET_USER_BY_ID = gql`
+  query GetUserById($userId: String!) {
+    getUserById(userId: $userId) {
+      id
+      name
+      bio
+      image
+      posts {
+        id
+        title
+        content
+        createdAt
+      }
+    }
+  }
+`;
