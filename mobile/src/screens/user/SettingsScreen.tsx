@@ -2,11 +2,12 @@ import React from 'react';
 import { View, Text, Switch, Button, StyleSheet } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { logout } from '../../store/slices/authSlice';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 
 const SettingsScreen = () => {
   const dispatch = useDispatch();
   const navigation: any = useNavigation();
+  const { colors } = useTheme();
 
   const [notificationsEnabled, setNotificationsEnabled] = React.useState(true);
   const toggleNotifications = () => setNotificationsEnabled(prev => !prev);
@@ -16,8 +17,8 @@ const SettingsScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.heading}>Settings</Text>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <Text style={[styles.heading, { color: colors.text }]}>Settings</Text>
 
       <View style={styles.row}>
         <Text style={styles.label}>Push Notifications</Text>
