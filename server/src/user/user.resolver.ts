@@ -31,4 +31,9 @@ export class UserResolver {
   ) {
     return this.userService.updateMyProfile(user.userId, input);
   }
+
+  @Query(() => User)
+  getUserById(@Args('userId') userId: string) {
+    return this.userService.findById(userId);
+  }
 }

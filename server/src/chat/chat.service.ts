@@ -72,6 +72,8 @@ export class ChatService {
       include: { participants: true },
     });
 
+    if (!convo) return message;
+
     for (const user of convo.participants) {
       if (user.id !== senderId) {
         await this.notificationService.createNotification(
